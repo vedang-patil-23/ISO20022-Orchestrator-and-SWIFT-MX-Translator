@@ -1,0 +1,70 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: ingest-service
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      group-id: ingest-service-group
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  jms:
+    template:
+      default-destination: swift.inbound
+    listener:
+      auto-startup: true
+      ack-mode: AUTO
+  activemq:
+    broker-url: tcp://localhost:61616
+    user: admin
+    password: admin
+
+# File watch configuration for SWIFT MT files
+file:
+  watch:
+    directory: /tmp/swift-inbox  # Using /tmp for easier access
+    patterns: "*.txt,*.fin,*.mt*"
+
+# Enable file upload
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+      file-size-threshold: 0
+
+# Enable Swagger UI
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    try-it-out-enabled: true
+    enabled: true
+
+# Logging configuration
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    com.iso20022: DEBUG
+  file:
+    name: logs/ingest-service.log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# Create upload directory on startup
+command:
+  runner:
+    enabled: true
+    command: "mkdir -p /tmp/swift-inbox"

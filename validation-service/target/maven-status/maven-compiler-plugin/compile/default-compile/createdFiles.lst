@@ -1,0 +1,4 @@
+com/iso20022/validation/service/ValidationService.class
+com/iso20022/validation/consumer/ValidationConsumer.class
+com/iso20022/validation/config/KafkaConfig.class
+com/iso20022/validation/ValidationServiceApplication.class

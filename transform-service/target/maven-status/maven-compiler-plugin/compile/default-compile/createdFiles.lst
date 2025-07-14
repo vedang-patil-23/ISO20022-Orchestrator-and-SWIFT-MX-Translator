@@ -1,0 +1,9 @@
+com/iso20022/transform/TransformServiceApplication.class
+com/iso20022/transform/mapper/DateTimeMapper.class
+com/iso20022/transform/config/KafkaConfig.class
+com/iso20022/transform/consumer/TransformConsumer.class
+com/iso20022/transform/mapper/MT103ToPacs008MapperImpl.class
+com/iso20022/transform/mapper/MT103ToPacs008Mapper.class
+com/iso20022/transform/model/MXMessage.class
+com/iso20022/transform/service/TransformationService.class
+com/iso20022/transform/mapper/AmountMapper.class

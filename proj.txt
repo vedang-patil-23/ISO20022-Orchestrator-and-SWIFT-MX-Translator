@@ -1,0 +1,56 @@
+Project: ISO20022 Orchestrator & SWIFT→MX Translator
+
+Description:
+Build a Java-17, Spring Boot microservices system that:
+1. Ingests SWIFT MT messages (from file upload or ActiveMQ)
+2. Parses MT → XML with the SwiftJavaSDK
+3. Validates MT-XML against its XSD, routes “valid”/“invalid” via Kafka topics
+4. Transforms valid MT-XML → ISO 20022 MX (using MapStruct + generated JAXB classes), XSD-validates MX
+5. Routes MX messages via Apache Camel to a mock Settlement REST API
+6. Logs every message and status JSON-documents into CouchDB
+7. Exposes a React UI with:
+   • File-upload component (ingest trigger)
+   • Real-time status table (WebSocket)
+   • “Invalid messages” tab (REST + CouchDB search)
+   • Audit log viewer with filters
+
+Tech Stack:
+• Java 17, Spring Boot (Web, Cloud Stream, Camel)  
+• Apache Camel for integration flows  
+• SwiftJavaSDK for MT parsing  
+• MapStruct + JAXB-generated ISO20022 bindings  
+• Kafka (free-tier) for async routing  
+• CouchDB (Cloudant free) for schemaless audit logs  
+• React.js + Tailwind + socket.io-client for UI  
+• Docker-Compose orchestration (ActiveMQ, Kafka, CouchDB, 4 services + UI)
+
+Deliverables:
+1. **Multi-module Maven project**:  
+   - ingest-service, validation-service, transform-service, router-service, ui  
+2. **Each Java service**:  
+   - `pom.xml` (Spring Boot + Camel + Kafka + MapStruct + Swift SDK + CouchDB client)  
+   - `application.yml` with Camel routes stubbed  
+   - Main class + REST controller for file upload (ingest)  
+   - Camel integration routes skeleton (MQ→Kafka, Kafka→validation, validation→transform, transform→route)  
+   - XML parsing code (Swift SDK), XSD validation code (`javax.xml.validation`)  
+   - Kafka producer/consumer configs  
+   - MapStruct mapper interfaces and generated DTOs  
+   - CouchDB repository classes (spring-data-couchdb or nano) for logging  
+   - WebSocket config and event publishers for status updates  
+
+3. **UI (React)**:  
+   - `UploadForm.jsx` (POST to ingest-service)  
+   - `StatusTable.jsx` (WebSocket subscription + live updates)  
+   - `InvalidList.jsx` (REST fetch + pagination)  
+   - `LogViewer.jsx` (CouchDB `_find` with filters)  
+   - Axios services and socket.io-client setup  
+   - Tailwind styling  
+
+4. **Infrastructure**:  
+   - `docker-compose.yml` for ActiveMQ, Kafka, CouchDB, each service + UI  
+   - `Dockerfile` for each microservice and the React app  
+
+5. **README.md**:  
+   - Architecture diagram ASCII art  
+   - Setup & run steps (local via Docker, free-tier deploy notes for Heroku/Confluent/Cloudant/Vercel)  
+   - Sample cURL/UI flows  

@@ -1,0 +1,63 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: router-service
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: router-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+  couchdb:
+    host: localhost
+    port: 5984
+    username: admin
+    password: password
+    database: swift_mx_audit
+    ssl-enabled: false
+
+# Kafka topics
+kafka:
+  topics:
+    mx-out: mx.out
+
+# Settlement API configuration
+settlement:
+  api:
+    base-url: http://localhost:8084/api/settlement
+    endpoints:
+      process-payment: /payments
+      get-status: /payments/{paymentId}
+    retry:
+      max-attempts: 3
+      initial-interval: 1000
+      multiplier: 2.0
+      max-interval: 5000
+
+# Routing rules
+routing:
+  rules:
+    - pattern: ".*pacs\.008.*"
+      destination: SETTLEMENT
+      endpoint: "/payments"
+      method: "POST"
+    - pattern: ".*pacs\.009.*"
+      destination: SETTLEMENT
+      endpoint: "/payments/credit"
+      method: "POST"
+    # Add more routing rules as needed
+
+# WebClient configuration
+webclient:
+  connect-timeout: 5000
+  read-timeout: 10000
+  response-timeout: 10000

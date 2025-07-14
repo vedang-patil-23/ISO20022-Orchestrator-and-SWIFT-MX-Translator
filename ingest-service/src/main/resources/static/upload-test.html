@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File Upload Test</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .upload-container {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        #fileInput {
+            display: none;
+        }
+        #status {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+    </style>
+</head>
+<body>
+    <h1>File Upload Test</h1>
+    
+    <div class="upload-container" id="dropZone">
+        <p>Drag & drop files here or click to select files</p>
+        <input type="file" id="fileInput" multiple>
+        <button class="btn" id="selectFiles">Select Files</button>
+    </div>
+    
+    <div id="fileList"></div>
+    
+    <button class="btn" id="uploadBtn" disabled>Upload Files</button>
+    
+    <div id="status"></div>
+    
+    <script>
+        $(document).ready(function() {
+            const dropZone = $('#dropZone');
+            const fileInput = $('#fileInput');
+            const selectFilesBtn = $('#selectFiles');
+            const uploadBtn = $('#uploadBtn');
+            const fileList = $('#fileList');
+            const status = $('#status');
+            
+            let files = [];
+            
+            // Handle file selection
+            selectFilesBtn.on('click', function() {
+                fileInput.click();
+            });
+            
+            fileInput.on('change', function() {
+                files = Array.from(this.files);
+                updateFileList();
+            });
+            
+            // Handle drag and drop
+            dropZone.on('dragover', function(e) {
+                e.preventDefault();
+                dropZone.css('border-color', '#4CAF50');
+            });
+            
+            dropZone.on('dragleave', function() {
+                dropZone.css('border-color', '#ccc');
+            });
+            
+            dropZone.on('drop', function(e) {
+                e.preventDefault();
+                dropZone.css('border-color', '#ccc');
+                
+                const dt = e.originalEvent.dataTransfer;
+                files = Array.from(dt.files);
+                updateFileList();
+            });
+            
+            // Update file list display
+            function updateFileList() {
+                fileList.empty();
+                
+                if (files.length === 0) {
+                    fileList.html('<p>No files selected</p>');
+                    uploadBtn.prop('disabled', true);
+                    return;
+                }
+                
+                uploadBtn.prop('disabled', false);
+                
+                const list = $('<ul></ul>');
+                files.forEach((file, index) => {
+                    list.append(`
+                        <li>
+                            ${file.name} (${formatFileSize(file.size)})
+                            <button class="remove-file" data-index="${index}">×</button>
+                        </li>
+                    `);
+                });
+                
+                fileList.html('<h3>Selected Files:</h3>');
+                fileList.append(list);
+                
+                // Add event listeners to remove buttons
+                $('.remove-file').on('click', function() {
+                    const index = $(this).data('index');
+                    files.splice(index, 1);
+                    updateFileList();
+                });
+            }
+            
+            // Format file size
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+            
+            // Handle file upload
+            uploadBtn.on('click', function() {
+                if (files.length === 0) return;
+                
+                const formData = new FormData();
+                files.forEach(file => {
+                    formData.append('files', file);
+                });
+                
+                status.removeClass('success error').text('Uploading...');
+                uploadBtn.prop('disabled', true);
+                
+                $.ajax({
+                    url: '/api/files/upload',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        status.addClass('success').text('Upload successful!');
+                        files = [];
+                        updateFileList();
+                        uploadBtn.prop('disabled', true);
+                    },
+                    error: function(xhr, statusText, error) {
+                        status.addClass('error').text('Upload failed: ' + (xhr.responseText || error));
+                        uploadBtn.prop('disabled', false);
+                    }
+                });
+            });
+            
+            // Initialize
+            updateFileList();
+        });
+    </script>
+</body>
+</html>

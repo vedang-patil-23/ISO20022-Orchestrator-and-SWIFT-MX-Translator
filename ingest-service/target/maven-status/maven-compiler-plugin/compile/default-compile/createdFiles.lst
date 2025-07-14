@@ -1,0 +1,9 @@
+com/iso20022/ingest/model/SwiftMessageDTO.class
+com/iso20022/ingest/controller/FileUploadController.class
+com/iso20022/ingest/model/UploadResponse.class
+com/iso20022/ingest/controller/WebController.class
+com/iso20022/ingest/config/OpenAPIConfig.class
+com/iso20022/ingest/model/SwiftMessageDTO$SwiftMessageDTOBuilder.class
+com/iso20022/ingest/controller/TestController.class
+com/iso20022/ingest/service/FileProcessingService.class
+com/iso20022/ingest/IngestServiceApplication.class
