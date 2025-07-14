@@ -1,8 +1,0 @@
-/Users/vedangpatil/Desktop/Project/ISO Pro/transform-service/src/main/java/com/iso20022/transform/mapper/MT103ToPacs008Mapper.java
-/Users/vedangpatil/Desktop/Project/ISO Pro/transform-service/src/main/java/com/iso20022/transform/consumer/TransformConsumer.java
-/Users/vedangpatil/Desktop/Project/ISO Pro/transform-service/src/main/java/com/iso20022/transform/model/MXMessage.java
-/Users/vedangpatil/Desktop/Project/ISO Pro/transform-service/src/main/java/com/iso20022/transform/TransformServiceApplication.java
-/Users/vedangpatil/Desktop/Project/ISO Pro/transform-service/src/main/java/com/iso20022/transform/mapper/DateTimeMapper.java
-/Users/vedangpatil/Desktop/Project/ISO Pro/transform-service/src/main/java/com/iso20022/transform/config/KafkaConfig.java
-/Users/vedangpatil/Desktop/Project/ISO Pro/transform-service/src/main/java/com/iso20022/transform/mapper/AmountMapper.java
-/Users/vedangpatil/Desktop/Project/ISO Pro/transform-service/src/main/java/com/iso20022/transform/service/TransformationService.java
